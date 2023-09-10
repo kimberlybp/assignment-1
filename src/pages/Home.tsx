@@ -1,6 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import QuizIcon from '@mui/icons-material/Quiz'
+import Add from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import {
   Box,
@@ -15,11 +16,15 @@ import {
   Typography,
 } from '@mui/joy'
 
+import { useState } from 'react'
 import ColorSchemeToggle from '../components/ColorSchemeToggle'
 import { Layout } from '../components/Layout'
 import { headers } from '../utils/constants/questions'
+import CreateQuestionModal from '../features/questionBank/components/CreateQuestionModal'
 
 const Home: React.FC = () => {
+  const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
+
   return (
     <CssVarsProvider>
       <CssBaseline />
@@ -71,7 +76,15 @@ const Home: React.FC = () => {
             >
               <SearchRoundedIcon />
             </IconButton>
-            <Button size="md">Create new question</Button>
+            <Button
+              size="md"
+              startDecorator={<Add />}
+              onClick={() => {
+                setIsCreateOpen(true)
+              }}
+            >
+              Create new question
+            </Button>
             <ColorSchemeToggle />
           </Box>
         </Layout.Header>
@@ -128,6 +141,12 @@ const Home: React.FC = () => {
           </Box>
         </Layout.Main>
       </Layout.Root>
+      <CreateQuestionModal
+        isOpen={isCreateOpen}
+        onClose={() => {
+          setIsCreateOpen(false)
+        }}
+      />
     </CssVarsProvider>
   )
 }
