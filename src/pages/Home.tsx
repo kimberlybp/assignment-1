@@ -21,12 +21,17 @@ import ColorSchemeToggle from '../components/ColorSchemeToggle'
 import { Layout } from '../components/Layout'
 import CreateQuestionModal from '../features/questionBank/components/CreateQuestionModal'
 import { selectQuestionBank } from '../features/questionBank/selectors'
-import { useAppSelector } from '../hooks/redux'
+import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import { headers } from '../utils/constants/questions'
 import { getComplexityColor } from '../utils/helpers'
 import QuestionDetailsModal from '../features/questionBank/components/QuestionDetailsModal'
+import {
+  removeQuestion,
+  setCurrentQuestion,
+} from '../features/questionBank/slice'
 
 const Home: React.FC = () => {
+  const dispatch = useAppDispatch()
   const questionBank = useAppSelector(selectQuestionBank)
 
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
@@ -148,11 +153,21 @@ const Home: React.FC = () => {
                         <ButtonGroup spacing="0.5rem">
                           <Button
                             size="sm"
-                            onClick={() => setIsDetailsOpen(true)}
+                            onClick={() => {
+                              setIsDetailsOpen(true)
+                              dispatch(setCurrentQuestion(question))
+                            }}
                           >
                             View details
                           </Button>
-                          <IconButton size="sm" variant="solid" color="danger">
+                          <IconButton
+                            size="sm"
+                            variant="solid"
+                            color="danger"
+                            onClick={() => {
+                              dispatch(removeQuestion(question.id))
+                            }}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </ButtonGroup>

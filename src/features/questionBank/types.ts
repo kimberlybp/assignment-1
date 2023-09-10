@@ -18,4 +18,5 @@ export interface DraftQuestion extends Omit<Question, 'id'> {
 
 export interface QuestionBankState {
   questionsList: Question[];
+  currentQuestion?: Question;
 }
