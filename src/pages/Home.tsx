@@ -1,12 +1,13 @@
-import MenuIcon from '@mui/icons-material/Menu'
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
-import QuizIcon from '@mui/icons-material/Quiz'
 import Add from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
+import MenuIcon from '@mui/icons-material/Menu'
+import QuizIcon from '@mui/icons-material/Quiz'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import {
   Box,
   Button,
   ButtonGroup,
+  Chip,
   CssBaseline,
   CssVarsProvider,
   IconButton,
@@ -15,15 +16,21 @@ import {
   Table,
   Typography,
 } from '@mui/joy'
-
 import { useState } from 'react'
 import ColorSchemeToggle from '../components/ColorSchemeToggle'
 import { Layout } from '../components/Layout'
-import { headers } from '../utils/constants/questions'
 import CreateQuestionModal from '../features/questionBank/components/CreateQuestionModal'
+import { selectQuestionBank } from '../features/questionBank/selectors'
+import { useAppSelector } from '../hooks/redux'
+import { headers } from '../utils/constants/questions'
+import { getComplexityColor } from '../utils/helpers'
+import QuestionDetailsModal from '../features/questionBank/components/QuestionDetailsModal'
 
 const Home: React.FC = () => {
+  const questionBank = useAppSelector(selectQuestionBank)
+
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
+  const [isDetailOpen, setIsDetailsOpen] = useState<boolean>(false)
 
   return (
     <CssVarsProvider>
@@ -108,33 +115,50 @@ const Home: React.FC = () => {
               >
                 <thead>
                   <tr>
-                    {headers.map((header) => (
-                      <th>{header}</th>
+                    {headers.map((header, index) => (
+                      <th key={index}>{header}</th>
                     ))}
                     {/* for action buttons */}
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Sample Title</td>
-                    <td>Sample Description</td>
-                    <td>Sample Category</td>
-                    <td>
-                      <Typography level="body-sm" color="success">
-                        Easy
-                      </Typography>
-                    </td>
-                    <td>
-                      <ButtonGroup spacing="0.5rem">
-                        <Button size="sm">View details</Button>
-                        <IconButton size="sm" variant="solid" color="danger">
-                          <DeleteIcon />
-                        </IconButton>
-                      </ButtonGroup>
-                    </td>
-                  </tr>
+                  {questionBank.questionsList.map((question) => (
+                    <tr key={question.id}>
+                      <td>{question.id}</td>
+                      <td>{question.title}</td>
+                      <td>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                          {question.category.map((cat) => (
+                            <Chip key={cat} color="primary" variant="solid">
+                              {cat}
+                            </Chip>
+                          ))}
+                        </Box>
+                      </td>
+                      <td>
+                        <Typography
+                          level="body-sm"
+                          color={getComplexityColor(question.complexity)}
+                        >
+                          {question.complexity}
+                        </Typography>
+                      </td>
+                      <td>
+                        <ButtonGroup spacing="0.5rem">
+                          <Button
+                            size="sm"
+                            onClick={() => setIsDetailsOpen(true)}
+                          >
+                            View details
+                          </Button>
+                          <IconButton size="sm" variant="solid" color="danger">
+                            <DeleteIcon />
+                          </IconButton>
+                        </ButtonGroup>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </Sheet>
@@ -145,6 +169,12 @@ const Home: React.FC = () => {
         isOpen={isCreateOpen}
         onClose={() => {
           setIsCreateOpen(false)
+        }}
+      />
+      <QuestionDetailsModal
+        isOpen={isDetailOpen}
+        onClose={() => {
+          setIsDetailsOpen(false)
         }}
       />
     </CssVarsProvider>

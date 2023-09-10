@@ -1,10 +1,20 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { LocalStorageKeys } from '../../utils/constants/common'
-import { generateIncrementedId } from '../../utils/questions'
+import { generateIncrementedId } from '../../utils/helpers'
 import { DraftQuestion, Question, QuestionBankState } from './types'
+import { parser } from './parser'
+
+let questionsList: Question[] = []
+const questionsListStr: string | null = localStorage.getItem(
+  LocalStorageKeys.QUESTIONS_LIST,
+)
+
+if (questionsListStr) {
+  questionsList = parser.parseQuestionsList(questionsListStr)
+}
 
 const initialState: QuestionBankState = {
-  questionsList: [],
+  questionsList,
 }
 
 const questionBankSlice = createSlice({

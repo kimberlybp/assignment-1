@@ -1,1 +1,1 @@
-export const headers = ['Id', 'Title', 'Description', 'Category', 'Complexity']
+export const headers = ['Id', 'Title', 'Category', 'Complexity']
