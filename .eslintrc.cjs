@@ -50,6 +50,10 @@ module.exports = {
       ts: 'never',
       tsx: 'never',
     }],
+    '@typescript-eslint/ban-ts-comment': [
+      'error',
+      {'ts-ignore': 'allow-with-description'},
+    ],
   },
   settings: {
     'import/parsers': {
