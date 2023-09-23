@@ -2,6 +2,8 @@ import {
   Stack, Modal, ModalDialog, Typography, Box, Chip,
 } from '@mui/joy'
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
 import { selectCurrentQuestion } from '../selectors'
 import { useAppSelector } from '../../../hooks/redux'
 import { getComplexityColor } from '../../../utils/helpers'
@@ -33,7 +35,13 @@ const QuestionDetailsModal: React.FC<Props> = (props: Props) => {
           <Box>
             <Typography level="h4">Description</Typography>
             <Box className="mdOverride">
-              <ReactMarkdown>{currentQuestion.description}</ReactMarkdown>
+              <ReactMarkdown
+                // @ts-ignore: Fix due to type conflicts with ReactMarkdown and rehypeRaw
+                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm]}
+              >
+                {currentQuestion.description}
+              </ReactMarkdown>
             </Box>
           </Box>
           <Box>

@@ -3,6 +3,7 @@ import { LocalStorageKeys } from '../../utils/constants/common'
 import { generateIncrementedId } from '../../utils/helpers'
 import { DraftQuestion, Question, QuestionBankState } from './types'
 import { parser } from './parser'
+import { initData } from '../../utils/constants/initData'
 
 let questionsList: Question[] = []
 const questionsListStr: string | null = localStorage.getItem(
@@ -11,6 +12,8 @@ const questionsListStr: string | null = localStorage.getItem(
 
 if (questionsListStr) {
   questionsList = parser.parseQuestionsList(questionsListStr)
+} else {
+  questionsList = initData
 }
 
 const initialState: QuestionBankState = {
